@@ -1,3 +1,4 @@
 .env
 twitch_cli_docs/*
 twitch.exe
+__pycache__/*
