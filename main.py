@@ -2,7 +2,7 @@ import functions_framework
 from flask import jsonify, Request, make_response
 import hmac
 import hashlib
-from utils import get_env_vars
+from utils.get_env_vars import getEnvVars
 from dotenv import load_dotenv
 import requests
 import json
