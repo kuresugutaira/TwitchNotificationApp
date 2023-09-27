@@ -2,7 +2,7 @@ import os
 from typing import Optional
 
 
-def getEnvVars(key: str) -> Optional[str]:
+def getEnvVars(key: str) -> str:
     '''
     環境変数から値を取得する関数
     '''
@@ -12,4 +12,4 @@ def getEnvVars(key: str) -> Optional[str]:
         return var
     else:
         print(key + "の値が取得できませんでした")
-        return None
+        exit(1)
