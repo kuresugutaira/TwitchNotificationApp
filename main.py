@@ -1,7 +1,7 @@
 import functions_framework
 from flask import jsonify, Request, make_response
 import hmac, hashlib
-import os
+from utils import getEnvVars
 from dotenv import load_dotenv
 import requests
 import json
@@ -24,15 +24,6 @@ class NotificationData:
         self.broadcast_game_name = broadcast_game_name
         self.broadcast_game_id = broadcast_game_id
         self.game_box_art_url = game_box_art_url
-
-# 環境変数から値を取り出す関数
-def getEnvVars(key: str) -> str:
-    var: str = os.environ.get(key)
-    if var is not None:
-        print(key + "の値を取得しました")
-        return var
-    else:
-        print(key + "の値が取得できませんでした")
 
 # Twitchのリクエストに含まれるシグネチャとこちらで生成したシグネチャが一致するかどうか確認する関数
 def isValidSignature(request: Request, secret: str) -> bool:
