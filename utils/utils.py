@@ -1,7 +1,6 @@
 import os
 from typing import Optional
 
-
 def getEnvVars(key: str) -> str:
     '''
     環境変数から値を取得する関数
