@@ -2,7 +2,7 @@ import functions_framework
 from flask import jsonify, Request, make_response
 import hmac
 import hashlib
-from utils.utils import getEnvVars, getAccessToken
+from utils.utils import getEnvVars, getAccessToken, getChannelInfo
 from dotenv import load_dotenv
 import requests
 import json
@@ -90,25 +90,6 @@ def notifyToDiscord(data: NotificationData, discord_webhook_url: str, discord_ic
                                          "Content-Type": "application/json"},
                                      data=json.dumps(discord_webhook_body).encode())
     return discord_response
-
-
-def getChannelInfo(api_uri: str, access_token: str, broadcaster_user_id: str, twitch_client_id: str) -> Any:
-    ''' 
-    TwitchのAPIを叩いて配信者のチャンネル情報を取得する関数
-
-    -----
-    Args:
-        ``api_uri`` (str) : ChannelInfoを取得するためのAPIのURI\n
-        ``access_token`` (str) : Twitch APIをたたくためのトークン\n
-        ``broadcaster_user_id`` (str) : 情報の欲しい配信者のUserID\n
-        ``twitch_client_id`` (str) : Twitch DevelopersのClientID
-    Returns:
-        ``channel_data`` (dict) : 配信者のデータの辞書
-    '''
-    channel_data = requests.get(api_uri,
-                                params={"broadcaster_id": broadcaster_user_id},
-                                headers={"client-id": twitch_client_id, "authorization": f"Bearer {access_token}"})
-    return (channel_data.json())["data"][0]
 
 
 @functions_framework.http

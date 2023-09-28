@@ -1,6 +1,6 @@
 import os
 import requests
-from typing import Optional
+from typing import Optional, Any
 
 
 def getEnvVars(key: str) -> str:
@@ -46,3 +46,22 @@ def getAccessToken(twitch_client_id: str, twitch_client_secret: str, get_access_
     else:
         print("App Access Tokenの取得に失敗しました")
     return access_token
+
+
+def getChannelInfo(api_uri: str, access_token: str, broadcaster_user_id: str, twitch_client_id: str) -> Any:
+    ''' 
+    TwitchのAPIを叩いて配信者のチャンネル情報を取得する関数
+
+    -----
+    Args:
+        ``api_uri`` (str) : ChannelInfoを取得するためのAPIのURI\n
+        ``access_token`` (str) : Twitch APIをたたくためのトークン\n
+        ``broadcaster_user_id`` (str) : 情報の欲しい配信者のUserID\n
+        ``twitch_client_id`` (str) : Twitch DevelopersのClientID
+    Returns:
+        ``channel_data`` (dict) : 配信者のデータの辞書
+    '''
+    channel_data = requests.get(api_uri,
+                                params={"broadcaster_id": broadcaster_user_id},
+                                headers={"client-id": twitch_client_id, "authorization": f"Bearer {access_token}"})
+    return (channel_data.json())["data"][0]
