@@ -34,11 +34,11 @@ jobs:
           --image asia-northeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/twitch-notification-app/docker-image \
           --region asia-northeast1 \
           --allow-unauthenticated \
-          --update-env SECRET=${{ secrets.SECRET }} \
-          --update-env DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }} \
-          --update-env TWITCH_CLIENT_ID=${{ secrets.TWITCH_CLIENT_ID }} \
-          --update-env TWITCH_CLIENT_SECRET=${{ secrets.TWITCH_CLIENT_SECRET }} \
-          --update-env GET_CHANNEL_INFO_URL=${{ secrets.GET_CHANNEL_INFO_URL }} \
-          --update-env GET_GAME_INFO_URL=${{ secrets.GET_GAME_INFO_URL }} \
-          --update-env GET_ACCESS_TOKEN_URL=${{ secrets.GET_ACCESS_TOKEN_URL }} \
-          --update-env DISCORD_ICON_URL=${{ secrets.DISCORD_ICON_URL }}
+          --set-env SECRET=${{ secrets.SECRET }} \
+          --set-env DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }} \
+          --set-env TWITCH_CLIENT_ID=${{ secrets.TWITCH_CLIENT_ID }} \
+          --set-env TWITCH_CLIENT_SECRET=${{ secrets.TWITCH_CLIENT_SECRET }} \
+          --set-env GET_CHANNEL_INFO_URL=${{ secrets.GET_CHANNEL_INFO_URL }} \
+          --set-env GET_GAME_INFO_URL=${{ secrets.GET_GAME_INFO_URL }} \
+          --set-env GET_ACCESS_TOKEN_URL=${{ secrets.GET_ACCESS_TOKEN_URL }} \
+          --set-env DISCORD_ICON_URL=${{ secrets.DISCORD_ICON_URL }}
