@@ -1,0 +1,41 @@
+name: Build and Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # リポジトリからコードをチェックアウト
+    - name: Checkout source code
+      uses: actions/checkout@v2
+
+    # Google Cloud SDKをセットアップ
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+
+    # Artifact Registryに認証
+    - name: Configure Docker to use Artifact Registry
+      run: |
+        gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+
+    # コンテナをビルドしてArtifact Registryにプッシュ
+    - name: Build and Push to Artifact Registry
+      run: |
+        gcloud builds submit --tag asia-northeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/twitch-notification-app/docker-image .
+
+    # Cloud Runにデプロイ
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy demo-cloudrun \
+          --image asia-northeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/twitch-notification-app/docker-image \
+          --region asia-northeast1 \
+          --allow-unauthenticated
