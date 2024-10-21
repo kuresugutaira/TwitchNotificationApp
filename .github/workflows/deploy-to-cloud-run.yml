@@ -14,6 +14,13 @@ jobs:
     - name: Checkout source code
       uses: actions/checkout@v2
 
+    # アカウント認証
+    - name: Activate Service Account
+      run: |
+        "${{ secrets.GCP_SA_KEY }}" > /tmp/gcp-key.json
+        gcloud auth activate-service-account --key-file=/tmp/gcp-key.json
+
+
     # Google Cloud SDKをセットアップ
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
