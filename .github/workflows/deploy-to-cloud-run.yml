@@ -19,28 +19,13 @@ jobs:
       run: |
         echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode > /tmp/gcp-key.json
         gcloud auth activate-service-account --key-file=/tmp/gcp-key.json
-
-    # Google Cloud SDKをセットアップ
-    - name: Set up Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@v1
-      with:
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
-        service_account_key: ${{ secrets.GCP_SA_KEY }}
-        export_default_credentials: true
-
-    # アカウントが有効化されているか確認
-    - name: Check Active Account
-      run: gcloud auth list
-
-    # Artifact Registryに認証
-    - name: Configure Docker to use Artifact Registry
-      run: |
         gcloud auth configure-docker asia-northeast1-docker.pkg.dev
 
     # コンテナをビルドしてArtifact Registryにプッシュ
     - name: Build and Push to Artifact Registry
       run: |
-        gcloud builds submit --tag asia-northeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/twitch-notification-app/docker-image .
+        docker build -t asia-northeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/twitch-notification-app/docker-image .
+        docker push asia-northeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/twitch-notification-app/docker-image
 
     # Cloud Runにデプロイ
     - name: Deploy to Cloud Run
