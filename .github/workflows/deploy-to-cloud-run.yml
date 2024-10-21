@@ -15,13 +15,10 @@ jobs:
       uses: actions/checkout@v2
 
     # アカウント認証
-    - name: Activate Service Account
+    - name: Decode Service Account Key
       run: |
-        echo "${{ secrets.GCP_SA_KEY }}" | tr -d '\r' | sed 's/\\n/\n/g' > /tmp/gcp-key.json
-        # JSONファイルの内容を確認
-        cat /tmp/gcp-key.json
+        echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode > /tmp/gcp-key.json
         gcloud auth activate-service-account --key-file=/tmp/gcp-key.json
-
 
     # Google Cloud SDKをセットアップ
     - name: Set up Google Cloud SDK
