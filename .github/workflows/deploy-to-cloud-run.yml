@@ -17,7 +17,9 @@ jobs:
     # アカウント認証
     - name: Activate Service Account
       run: |
-        echo "${{ secrets.GCP_SA_KEY }}" | tr -d '\r' > /tmp/gcp-key.json
+        echo "${{ secrets.GCP_SA_KEY }}" | tr -d '\r' | sed 's/\\n/\n/g' > /tmp/gcp-key.json
+        # JSONファイルの内容を確認
+        cat /tmp/gcp-key.json
         gcloud auth activate-service-account --key-file=/tmp/gcp-key.json
 
 
