@@ -19,7 +19,7 @@ jobs:
       run: |
         echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode > /tmp/gcp-key.json
         gcloud auth activate-service-account --key-file=/tmp/gcp-key.json
-        gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+        gcloud auth configure-docker asia-northeast1-docker.pkg.dev --project ${{ secrets.GCP_PROJECT_ID }}
 
     # コンテナをビルドしてArtifact Registryにプッシュ
     - name: Build and Push to Artifact Registry
@@ -41,4 +41,6 @@ jobs:
           --set-env-vars GET_CHANNEL_INFO_URL=${{ secrets.GET_CHANNEL_INFO_URL }} \
           --set-env-vars GET_GAME_INFO_URL=${{ secrets.GET_GAME_INFO_URL }} \
           --set-env-vars GET_ACCESS_TOKEN_URL=${{ secrets.GET_ACCESS_TOKEN_URL }} \
-          --set-env-vars DISCORD_ICON_URL=${{ secrets.DISCORD_ICON_URL }}
+          --set-env-vars DISCORD_ICON_URL=${{ secrets.DISCORD_ICON_URL }} \
+          --project ${{ secrets.GCP_PROJECT_ID }}
+          
