@@ -30,7 +30,7 @@ jobs:
     # Cloud Runにデプロイ
     - name: Deploy to Cloud Run
       run: |
-        gcloud run deploy demo-cloudrun \
+        gcloud run deploy twitch-notification-app \
           --image asia-northeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/twitch-notification-app/docker-image \
           --region asia-northeast1 \
           --allow-unauthenticated \
