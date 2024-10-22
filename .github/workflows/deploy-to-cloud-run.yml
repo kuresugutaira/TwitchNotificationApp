@@ -34,6 +34,7 @@ jobs:
           --image asia-northeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/twitch-notification-app/docker-image \
           --region asia-northeast1 \
           --allow-unauthenticated \
+          --service-account twitch-notification-app-ci@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com \
           --set-env-vars SECRET=${{ secrets.SECRET }} \
           --set-env-vars DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }} \
           --set-env-vars TWITCH_CLIENT_ID=${{ secrets.TWITCH_CLIENT_ID }} \
