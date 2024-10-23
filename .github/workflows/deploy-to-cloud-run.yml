@@ -1,0 +1,47 @@
+name: Build and Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # リポジトリからコードをチェックアウト
+    - name: Checkout source code
+      uses: actions/checkout@v2
+
+    # アカウント認証
+    - name: Decode Service Account Key
+      run: |
+        echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode > /tmp/gcp-key.json
+        gcloud auth activate-service-account --key-file=/tmp/gcp-key.json
+        gcloud auth configure-docker asia-northeast1-docker.pkg.dev --project ${{ secrets.GCP_PROJECT_ID }}
+
+    # コンテナをビルドしてArtifact Registryにプッシュ
+    - name: Build and Push to Artifact Registry
+      run: |
+        docker build -t asia-northeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/twitch-notification-app/docker-image .
+        docker push asia-northeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/twitch-notification-app/docker-image
+
+    # Cloud Runにデプロイ
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy twitch-notification-app \
+          --image asia-northeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/twitch-notification-app/docker-image \
+          --region asia-northeast1 \
+          --allow-unauthenticated \
+          --service-account twitch-notification-app-ci@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com \
+          --set-env-vars SECRET=${{ secrets.SECRET }} \
+          --set-env-vars DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }} \
+          --set-env-vars TWITCH_CLIENT_ID=${{ secrets.TWITCH_CLIENT_ID }} \
+          --set-env-vars TWITCH_CLIENT_SECRET=${{ secrets.TWITCH_CLIENT_SECRET }} \
+          --set-env-vars GET_CHANNEL_INFO_URL=${{ secrets.GET_CHANNEL_INFO_URL }} \
+          --set-env-vars GET_GAME_INFO_URL=${{ secrets.GET_GAME_INFO_URL }} \
+          --set-env-vars GET_ACCESS_TOKEN_URL=${{ secrets.GET_ACCESS_TOKEN_URL }} \
+          --set-env-vars DISCORD_ICON_URL=${{ secrets.DISCORD_ICON_URL }} \
+          --project ${{ secrets.GCP_PROJECT_ID }}
+          
